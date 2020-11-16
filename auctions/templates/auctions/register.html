@@ -1,0 +1,14 @@
+{% extends "auctions/layout.html" %} {% block body %} {% include 'utils/auth-style.html' %}
+
+<form action="{% url 'register' %}" method="post">
+  {% csrf_token %}
+  <input autofocus type="text" name="username" placeholder="Username" autocomplete="off" required />
+  <input type="email" name="email" placeholder="Email Address" autocomplete="off" required />
+  <input type="password" name="password" placeholder="Password" required />
+  <input type="password" name="confirmation" placeholder="Confirm Password" required />
+  <button type="submit">Register</button>
+</form>
+
+Already have an account? <a href="{% url 'login' %}">Log In here.</a>
+
+{% endblock %}

@@ -1,0 +1,69 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>{% if title %} {{title}} {% else %} Auctions {% endif %}</title>
+    <link rel="icon" href="{% static 'auctions/favicon.ico' %}" type="image/x-icon" />
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;700&display=swap" defer rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" defer />
+    <link rel="stylesheet" href="{% static 'auctions/styles.css' %}" defer />
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="container">
+        <a href="{% url 'index' %}" class="navbar-brand">Auctions</a>
+        <small style="color: #a7faac">
+          {% if user.is_authenticated %}
+          <span> Signed in as <strong>{{ user.username }}</strong>. </span>
+          {% else %}
+          <span> Not signed in. </span>
+          {% endif %}
+        </small>
+        <ul class="nav">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'index' %}">Active Listings</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'categories' %}">Categories</a>
+          </li>
+          {% if user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'whitelist' %}">Whitelist</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'bids' %}">Bids</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'new_auction' %}">Create Listing</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
+          </li>
+          {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'login' %}">Log In</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'register' %}">Register</a>
+          </li>
+          {% endif %}
+        </ul>
+      </div>
+    </nav>
+    <section class="container">
+      <h1>{% if title %} {{title}} {% else %} Auctions {% endif %}</h1>
+    </section>
+    <section class="container">
+      <hr />
+    </section>
+
+    {% if message %}
+    <section class="container">
+      <div class="message {% if error == False %}s{% else %}e{% endif %}">{{message}}</div>
+    </section>
+    {% endif %}
+    <div class="container">
+      <div style="flex: 1">{% block body %} {% endblock %}</div>
+    </div>
+  </body>
+</html>

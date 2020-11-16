@@ -1,0 +1,71 @@
+<style>
+  div.auctions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+  }
+  div.auctions > a {
+    width: 100%;
+    max-width: 32%;
+    background-color: #fff;
+    box-shadow: 0 0 20px #0005;
+    margin-bottom: 30px;
+    color: #666;
+  }
+  div.auctions > a:hover {
+    box-shadow: 0 0 30px #0009;
+  }
+  div.auctions > a div:first-child {
+    height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+  }
+  div.auctions > a div:first-child img {
+    max-height: 200px;
+  }
+  div.auctions > a div:last-child {
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+  }
+  div.auctions > a div:last-child h3 {
+    margin: 0;
+    color: #bf5a13;
+    text-align: justify;
+    flex: 1 1 auto;
+  }
+</style>
+
+<div class="auctions">
+  {% for auction in auctions %}
+  <a href="{% url 'auction' auction.id %}">
+    <div>
+      <img src="{{auction.image}}" alt="{{auction.title}}" />
+    </div>
+    <div>
+      <h3>{{auction.title}}</h3>
+      <article>{{auction.description | slice:"0:64"}} ...</article>
+      <p style="margin: 5px 0">
+        <small> {{auction.date}} </small>
+      </p>
+      <h5 style="margin: 0 0 5px">
+        Category: {% if auction.category %}<span style="color: #d80c7a">{{auction.category.name}}</span>{% else %}None{% endif %}
+      </h5>
+      <h4 style="margin: 0">Current price: <span style="color: #067272">${{auction.price}}</span></h4>
+      {% if auction.mybid %}
+      <h4 style="margin: 10px 0 0">
+        Your bid: <span style="color: #067272">${{auction.mybid}}</span>
+        {% if auction.won %}
+        <span style="color: darkgreen">(You Won)</span>
+        {% endif %}
+      </h4>
+      {% endif %}
+    </div>
+  </a>
+  {% empty %}
+  <div class="empty">
+    <span>No Auctions.</span>
+  </div>
+  {% endfor %}
+</div>

@@ -1,0 +1,81 @@
+{% extends "auctions/layout.html" %} {% block body %}
+<style>
+  fieldset {
+    padding: 0;
+    margin: 25px 0;
+    display: flex;
+    align-items: center;
+    border: 0;
+  }
+  label {
+    font-weight: 700;
+    width: 150px;
+    color: #888;
+    font-size: 16px;
+  }
+  input,
+  textarea,
+  select {
+    outline: none;
+    width: 100%;
+    padding: 10px 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+  textarea {
+    resize: none;
+    line-height: 1.4;
+  }
+  button.create {
+    width: 100%;
+    background-color: darkgreen;
+    color: #fff;
+    border: 0;
+    padding: 10px;
+    font-size: 18px;
+    border-radius: 10px;
+    margin-top: 20px;
+    cursor: pointer;
+  }
+</style>
+<form action="{% url 'new_auction' %}" method="post">
+  {% csrf_token %}
+  <fieldset>
+    <label for="title">Title:</label>
+    <input
+      autofocus
+      autocomplete="off"
+      type="text"
+      name="title"
+      id="title"
+      placeholder="Title"
+      maxlength="128"
+      value="{{auction}}"
+      required
+    />
+  </fieldset>
+  <fieldset>
+    <label for="description">Description:</label>
+    <textarea name="description" placeholder="Description" id="description" rows="10" maxlength="1080" required>{{description}}</textarea>
+  </fieldset>
+  <fieldset>
+    <label for="price">Starting Bid:</label>
+    <input type="number" name="price" id="price" placeholder="Starting Price in USD" value="{{price}}" required />
+  </fieldset>
+  <fieldset>
+    <label for="image">Image URL:</label>
+    <input type="text" name="image" id="image" placeholder="Image URL" value="{{image}}" />
+  </fieldset>
+  <fieldset>
+    <label for="category">Category:</label>
+    <select name="category" id="category">
+      <option value="">Select Category</option>
+      {% for cat in categories %}
+      <option value="{{cat.id}}">{{cat.name}}</option>
+      {% endfor %}
+    </select>
+  </fieldset>
+  <button type="submit" class="create">Create</button>
+</form>
+
+{% endblock %}

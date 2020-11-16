@@ -1,0 +1,97 @@
+{% extends "auctions/layout.html" %} {% block body %} {% include 'utils/auction-style.html' %}
+
+<header>
+  <div>
+    <img style="max-height: 400px" src="{{auction.image}}" alt="{{auction.title}}" />
+  </div>
+  <div>
+    <h4 style="margin: 0">
+      <span>{% if auction.category %}{{auction.category.name}} |{% endif %}</span>
+      <small>{{auction.date}}</small>
+      {% if auction.closed %}
+      <span class="closed">Closed</span>
+      {% endif %}
+      <!-- space -->
+      {% if won %}
+      <span class="won">You Won</span>
+      {% endif %}
+    </h4>
+    <p>{{auction.description}}</p>
+    <h4 style="margin: 0">Current Price: <span style="color: #067272">${{auction.price}}</span></h4>
+    {% if mybid %}
+    <h4 style="margin: 5px 0">
+      Your bid: <span style="color: #067272">${{mybid}}</span>
+      {% if won %}
+      <span style="color: darkgreen">(You Won)</span>
+      {% endif %}
+    </h4>
+    {% endif %}
+    <!-- space -->
+    {% if request.user.is_authenticated %}
+    <div class="btns">
+      {% if whitelisted %}
+      <a href="?whitelist=remove">Remove from Whitelist</a>
+      {% else %}
+      <a href="?whitelist=add">Add to Whitelist</a>
+      {% endif %}
+      <!-- Comment  -->
+      {% if request.user.username == auction.user.username and not auction.closed %}
+      <a href="?close"> Close </a>
+      {% endif %}
+    </div>
+    {% endif %}
+  </div>
+</header>
+<hr />
+
+{% if request.user.username != auction.user.username and not auction.closed and request.user.is_authenticated %}
+<form action="{% url 'auction' auction.id %}" method="POST" class="b">
+  {% csrf_token %}
+  <label for="bid">Place Your Bid: </label>
+  <input type="number" name="bid" id="bid" placeholder="Your bid in USD" min="{{auction.price | add:1}}" required />
+  <input type="submit" value="Bid" />
+</form>
+<hr />
+{% endif %} {% if bids %}
+<h3>Bids</h3>
+<section>
+  {% for bid in bids %}
+  <div class="b">
+    {{bid.user.username}} | ${{bid.bid}}
+    <!-- space -->
+    {% if bid.won %}
+    <span style="color: darkgreen"> &nbsp; (won) </span>
+    {% endif %}
+  </div>
+  {% empty %}
+  <h4>No Bids</h4>
+  {% endfor %}
+</section>
+{% endif %}
+
+<h3>Comments</h3>
+{% if request.user.is_authenticated %}
+<form action="{% url 'comment' auction.id %}" method="POST" class="c">
+  {% csrf_token %}
+  <textarea name="comment" rows="2" placeholder="Type Comment" required></textarea>
+  <input type="submit" value="Post" />
+</form>
+{% endif %}
+<hr />
+
+<section>
+  {% for comment in comments %}
+  <div class="c">
+    <strong>
+      <span> {{comment.user.username}} </span>
+      |
+      <small> {{comment.date}} </small>
+    </strong>
+    <span> {{comment.comment}} </span>
+  </div>
+  {% empty %}
+  <h4>No Comments</h4>
+  {% endfor %}
+</section>
+
+{% endblock %}
